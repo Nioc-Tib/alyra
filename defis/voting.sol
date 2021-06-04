@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.0;
+pragma solidity 0.8.4;
 
 /// @title A basic voting system
 /// @author Ryan Loutfi
@@ -164,7 +164,7 @@ contract Voting is Ownable {
         checkStatus(state, WorkflowStatus.VotingSessionEnded)
     {
         state = WorkflowStatus.VotesTallied;
-        WorkflowStatusChange(
+        emit WorkflowStatusChange(
             WorkflowStatus.VotingSessionEnded,
             WorkflowStatus.VotesTallied
         );
