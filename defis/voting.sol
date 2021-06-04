@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.0;
 
+/// @title A basic voting system
+/// @author Ryan Loutfi
+
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/1488d4f6782f76f74f3652e44da9b9e241146ccb/contracts/access/Ownable.sol";
 
 contract Voting is Ownable {
@@ -52,6 +55,7 @@ contract Voting is Ownable {
         _;
     }
 
+    /// @dev contract owner adds an address to the whitelist
     function whitelist(address _address)
         public
         onlyOwner
@@ -65,6 +69,7 @@ contract Voting is Ownable {
         emit VoterRegistered(_address);
     }
 
+    /// @dev contract owner initiates proposal registration process
     function startProposalRegistration()
         public
         onlyOwner
@@ -78,6 +83,8 @@ contract Voting is Ownable {
         emit ProposalsRegistrationStarted();
     }
 
+    /// @dev whitelisted address can submit their proposal
+    /// @param _proposal string description of the submitted proposal
     function submitProposal(string memory _proposal)
         public
         checkStatus(state, WorkflowStatus.ProposalsRegistrationStarted)
@@ -88,6 +95,7 @@ contract Voting is Ownable {
         proposalCounter++;
     }
 
+    /// @dev contract owner ends proposal registration process
     function endProposalRegistration()
         public
         onlyOwner
@@ -101,6 +109,7 @@ contract Voting is Ownable {
         emit ProposalsRegistrationEnded();
     }
 
+    /// @dev contract owner initiates voting session
     function startVotingSession()
         public
         onlyOwner
@@ -114,6 +123,9 @@ contract Voting is Ownable {
         emit VotingSessionStarted();
     }
 
+    /// @dev whitelisted address can vote on previously submitted proposals
+    /// @notice directly increments voted proposal voteCount and live updates winningProposalId
+    /// @param _proposalId voted proposal
     function votePrposal(uint256 proposalId)
         public
         checkStatus(state, WorkflowStatus.VotingSessionStarted)
@@ -129,6 +141,7 @@ contract Voting is Ownable {
         emit Voted(msg.sender, proposalId);
     }
 
+    /// @dev contract owner ends voting session
     function endVotingSession()
         public
         onlyOwner
@@ -143,6 +156,8 @@ contract Voting is Ownable {
         emit VotingSessionEnded();
     }
 
+    /// @dev contract owner initiates vote counting and set WorkflowStatus to Votes Tallied
+    /// @notice no need for a for loop as winningProposalId was updated live during votin session
     function countVotes()
         public
         onlyOwner
@@ -156,6 +171,8 @@ contract Voting is Ownable {
         emit VotesTallied();
     }
 
+    /// @dev anyone can get winningProposal information
+    /// @return returns Struct with proposal description and vote count
     function getWinningProposal()
         public
         view
