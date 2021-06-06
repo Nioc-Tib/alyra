@@ -1,29 +1,28 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.4;
 
-contract Pull {
-    mapping(address => uint256) despositors;
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-    event LogDepositReceived(address);
+contract Pull {
+    using SafeMath for uint256;
+    mapping(address => uint256) depositors;
+
+    event LogDepositReceived(address, uint256);
     event LogWithdrawalSuccessful(address, uint256);
 
-    function error() internal pure returns (string memory) {
-        return "Transaction failed";
-    }
-
     function withdraw(uint256 _amount) public payable {
-        require(despositors[msg.sender] >= _amount, "Insufficient balance");
+        require(depositors[msg.sender] >= _amount, "Insufficient balance");
         (bool success, ) = msg.sender.call{value: _amount}("");
-        if (!success) {
-            error();
-        }
+        require(success, "Withdrawal failed");
+        emit LogWithdrawalSuccessful(msg.sender, _amount);
+        depositors[msg.sender].sub(_amount);
     }
 
     function deposit(uint256 _amount) public payable {
         (bool success, ) = address(this).call{value: _amount}("");
-        if (!success) {
-            error();
-        }
+        require(success, "deposit failed");
+        depositors[msg.sender].add(_amount);
+        emit LogDepositReceived(msg.sender, _amount);
     }
 
     function getContractBalance() public view returns (uint256) {
@@ -34,10 +33,14 @@ contract Pull {
         return address(this);
     }
 
+    function getDepositorBalance() public view returns (uint256) {
+        return depositors[msg.sender];
+    }
+
     fallback() external payable {
         require(msg.data.length == 0);
-        despositors[msg.sender] = msg.value;
-        emit LogDepositReceived(msg.sender);
+        depositors[msg.sender] = msg.value;
+        emit LogDepositReceived(msg.sender, msg.value);
     }
 
     receive() external payable {}
