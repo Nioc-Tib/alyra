@@ -4,7 +4,7 @@ pragma solidity 0.8.4;
 /// @title A basic voting system
 /// @author Ryan Loutfi
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/1488d4f6782f76f74f3652e44da9b9e241146ccb/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Voting is Ownable {
     uint256 winningProposalId;
