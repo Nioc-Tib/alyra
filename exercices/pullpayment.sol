@@ -15,14 +15,12 @@ contract Pull {
         (bool success, ) = msg.sender.call{value: _amount}("");
         require(success, "Withdrawal failed");
         emit LogWithdrawalSuccessful(msg.sender, _amount);
-        depositors[msg.sender].sub(_amount);
+        depositors[msg.sender] = depositors[msg.sender].sub(_amount);
     }
 
-    function deposit(uint256 _amount) public payable {
-        (bool success, ) = address(this).call{value: _amount}("");
-        require(success, "deposit failed");
-        depositors[msg.sender].add(_amount);
-        emit LogDepositReceived(msg.sender, _amount);
+    function deposit() public payable {
+        depositors[msg.sender] = depositors[msg.sender].add(msg.value);
+        emit LogDepositReceived(msg.sender, msg.value);
     }
 
     function getContractBalance() public view returns (uint256) {
@@ -37,11 +35,8 @@ contract Pull {
         return depositors[msg.sender];
     }
 
-    fallback() external payable {
-        require(msg.data.length == 0);
-        depositors[msg.sender] = msg.value;
+    receive() external payable {
+        depositors[msg.sender] = depositors[msg.sender].add(msg.value);
         emit LogDepositReceived(msg.sender, msg.value);
     }
-
-    receive() external payable {}
 }
