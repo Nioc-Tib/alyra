@@ -13,6 +13,7 @@ contract Voting is Ownable {
     mapping(address => Voter) voters;
     WorkflowStatus state;
     mapping(uint256 => Proposal) proposals;
+    mapping(string => bool) proposalToDesc;
 
     struct Voter {
         bool isRegistered;
@@ -90,6 +91,8 @@ contract Voting is Ownable {
         checkStatus(state, WorkflowStatus.ProposalsRegistrationStarted)
     {
         require(voters[msg.sender].isRegistered);
+        require(!proposalToDesc[_proposal], "This proposal already exist");
+        proposalToDesc[_proposal] = true;
         proposals[proposalCounter].description = _proposal;
         emit ProposalRegistered(proposalCounter);
         proposalCounter++;
@@ -125,12 +128,17 @@ contract Voting is Ownable {
 
     /// @dev whitelisted address can vote on previously submitted proposals
     /// @notice directly increments voted proposal voteCount and live updates winningProposalId
-    /// @param _proposalId voted proposal
+    /// @param proposalId voted proposal
     function votePrposal(uint256 proposalId)
         public
         checkStatus(state, WorkflowStatus.VotingSessionStarted)
     {
         require(voters[msg.sender].isRegistered);
+        require(!voters[msg.sender].hasVoted, "You have already voted");
+        require(
+            bytes(proposals[proposalId].description).length != 0,
+            "This proposal does not exist"
+        );
         proposals[proposalId].voteCount++;
         if (proposals[proposalId].voteCount > maxVotes) {
             maxVotes = proposals[proposalId].voteCount;
@@ -157,7 +165,7 @@ contract Voting is Ownable {
     }
 
     /// @dev contract owner initiates vote counting and set WorkflowStatus to Votes Tallied
-    /// @notice no need for a for loop as winningProposalId was updated live during votin session
+    /// @notice no need for a for loop as winningProposalId was updated live during votin sessio
     function countVotes()
         public
         onlyOwner
