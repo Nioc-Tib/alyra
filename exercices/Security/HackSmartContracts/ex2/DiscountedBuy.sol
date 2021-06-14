@@ -12,7 +12,7 @@ contract DiscountedBuy {
 
     /// @dev Buy an object.
     function buy() public payable {
-        require(msg.value * (1 + objectBought[msg.sender]) == basePrice);
+        require(msg.value == price());
         objectBought[msg.sender] += 1;
     }
 
