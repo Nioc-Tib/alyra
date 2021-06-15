@@ -4,8 +4,11 @@ pragma solidity ^0.8.4;
 import "./CommonCoffers.sol";
 
 contract AttackCommonCoffers {
-    address CommonCoffersAddress = 0x9C22ce44f598cf5616c28a25b3514a1f293B3919;
-    CommonCoffers c = CommonCoffers(CommonCoffersAddress);
+    CommonCoffers c;
+
+    constructor(CommonCoffers _contractAddress) {
+        c = CommonCoffers(_contractAddress);
+    }
 
     function attack() public {
         require(
