@@ -13,7 +13,7 @@ contract Voting is Ownable {
     mapping(address => Voter) voters;
     WorkflowStatus state;
     mapping(uint256 => Proposal) proposals;
-    mapping(string => bool) proposalToDesc;
+    mapping(string => bool) proposalExists;
 
     struct Voter {
         bool isRegistered;
@@ -91,8 +91,8 @@ contract Voting is Ownable {
         checkStatus(state, WorkflowStatus.ProposalsRegistrationStarted)
     {
         require(voters[msg.sender].isRegistered);
-        require(!proposalToDesc[_proposal], "This proposal already exist");
-        proposalToDesc[_proposal] = true;
+        require(!proposalExists[_proposal], "This proposal already exist");
+        proposalExists[_proposal] = true;
         proposals[proposalCounter].description = _proposal;
         emit ProposalRegistered(proposalCounter);
         proposalCounter++;
