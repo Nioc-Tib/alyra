@@ -4,15 +4,15 @@ pragma solidity 0.8.5;
 /// @title A basic voting system
 /// @author Ryan Loutfi
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Ownable.sol";
 
 contract Voting is Ownable {
-    uint256 winningProposalId;
+    uint256 public winningProposalId;
     uint256 maxVotes;
-    uint256 proposalCounter;
+    uint256 public proposalCounter;
     mapping(address => Voter) voters;
-    WorkflowStatus state;
-    mapping(uint256 => Proposal) proposals;
+    WorkflowStatus public state;
+    mapping(uint256 => Proposal) public proposals;
     mapping(string => bool) proposalExists;
 
     struct Voter {
@@ -129,7 +129,7 @@ contract Voting is Ownable {
     /// @dev whitelisted address can vote on previously submitted proposals
     /// @notice directly increments voted proposal voteCount and live updates winningProposalId
     /// @param proposalId voted proposal
-    function votePrposal(uint256 proposalId)
+    function voteProposal(uint256 proposalId)
         public
         checkStatus(state, WorkflowStatus.VotingSessionStarted)
     {
@@ -188,5 +188,13 @@ contract Voting is Ownable {
         returns (Proposal memory)
     {
         return proposals[winningProposalId];
+    }
+
+    function getProposal(uint256 _proposalId)
+        public
+        view
+        returns (string memory)
+    {
+        return proposals[_proposalId].description;
     }
 }

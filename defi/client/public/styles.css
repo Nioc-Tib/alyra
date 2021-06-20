@@ -1,0 +1,6 @@
+body, html, #root {
+    height: 100%;
+    margin: 0;
+    background-color : #0F3460;
+    color: white;
+}

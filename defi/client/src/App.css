@@ -1,0 +1,17 @@
+.App {
+  height: 100%;
+  text-align: center;
+  background-color: #0f3460;
+}
+
+.App-logo {
+  height: 40vmin;
+}
+
+.card-header {
+  background-color: #1a1a2e;
+}
+
+.card-body {
+  background-color: #16213e;
+}
