@@ -47,9 +47,9 @@ export const updateAccounts = (newAccount) => {
 export const checkOwnership = (owner, user) => {
   return (dispatch) => {
     let isOwner = false;
-    if (owner == user) {
+    if (owner === user) {
       isOwner = true;
     }
-    dispatch(web3Actions.checkOwnership({ isOwner : isOwner }));
+    dispatch(web3Actions.checkOwnership({ isOwner: isOwner }));
   };
 };

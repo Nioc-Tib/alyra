@@ -4,7 +4,7 @@ const contractSlice = createSlice({
   name: "contract",
   initialState: {
     owner: null,
-    worklowStatus: 0,
+    workflowStatus: 0,
     proposals: [],
   },
   reducers: {
@@ -17,6 +17,9 @@ const contractSlice = createSlice({
     },
     addProposal(state, action) {
       state.proposals.push(action.payload.proposal);
+    },
+    getProposals(state, action) {
+      state.proposals = action.payload.proposals;
     },
   },
 });

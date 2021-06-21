@@ -5,10 +5,12 @@ import "./App.css";
 import RegisterVoter from "./components/Owner/RegisterVoter";
 import Workflow from "./components/Owner/Workflow";
 import CreateProposal from "./components/Proposals/CreateProposal.js";
-import { loadContract } from "./store/contract-actions";
+import { loadContract, getProposals } from "./store/contract-actions";
 import { checkOwnership, loadWeb3, updateAccounts } from "./store/web3-actions";
 import ListProposals from "./components/Proposals/ListProposals";
 import GetWinningProposal from "./components/Proposals/GetWinningProposal";
+import Notification from "./components/UI/Notification";
+import Header from "./components/UI/Header";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -19,6 +21,7 @@ const App = () => {
   const accounts = useSelector((state) => state.web3.accounts);
   const workflowStatus = useSelector((state) => state.contract.workflowStatus);
   const isOwner = useSelector((state) => state.web3.isOwner);
+  const notification = useSelector((state) => state.ui);
 
   const workflowTitle = [
     "Registering Voters",
@@ -34,8 +37,17 @@ const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if (contract !== null) {
+      const checkIfExistingProposals = async () => {
+        const proposalCounter = await contract.methods.proposalCounter().call();
+        dispatch(getProposals(proposalCounter, contract));
+      };
+      checkIfExistingProposals();
+    }
+  }, [dispatch, contract]);
+
+  useEffect(() => {
     if (web3 !== null && contract !== null) {
-      // console.log(contract);
       dispatch(loadContract(contract));
     }
   }, [dispatch, web3, contract]);
@@ -46,7 +58,7 @@ const App = () => {
     }
   }, [dispatch, owner, accounts]);
 
-  window.ethereum.on("accountsChanged", async (accounts) => {
+  window.ethereum.on("accountsChanged", async () => {
     if (isOwner !== null) {
       const newAccount = await web3.eth.getAccounts();
       dispatch(updateAccounts(newAccount));
@@ -58,24 +70,23 @@ const App = () => {
   }
 
   return (
-    <div className="App container">
-      <br />
-      <div>
-        <h4 className="d-inline p-2">Worklow Status :</h4>
-        <h4 className="d-inline p-2">{workflowTitle[workflowStatus]}</h4>
+    <Fragment>
+      <Header />
+      <div className="App container">
+        {notification.display && (
+          <Notification message={notification.message} />
+        )}
+        <div className="my-3">
+          <h4 className="d-inline p-2">Worklow Status :</h4>
+          <h4 className="d-inline p-2">{workflowTitle[workflowStatus]}</h4>
+        </div>
+        {workflowStatus === 5 && <GetWinningProposal />}
+        {isOwner && <Workflow />}
+        {workflowStatus === 0 && isOwner && <RegisterVoter />}
+        {workflowStatus === 1 && <CreateProposal />}
+        {contract !== null && web3 !== null && <ListProposals />}
       </div>
-      <br />
-      {workflowStatus === 5 && <GetWinningProposal />}
-      <br />
-      <br />
-      {isOwner && <Workflow />}
-      <br />
-      {workflowStatus === 0 && <RegisterVoter />}
-      <br />
-      {workflowStatus === 1 && <CreateProposal />}
-      <br />
-      {contract !== null && web3 !== null && <ListProposals />}
-    </div>
+    </Fragment>
   );
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { incrementWorflow } from "../../store/contract-actions";
 
-const Workflow = (props) => {
+const Workflow = () => {
   const dispatch = useDispatch();
   const contract = useSelector((state) => state.web3.contract);
   const workflowStatus = useSelector((state) => state.contract.workflowStatus);
@@ -52,7 +52,7 @@ const Workflow = (props) => {
     if (workflowStatus === 4) {
       try {
         if (contract !== null) {
-            await contract.methods.countVotes().send({ from: account });    
+          await contract.methods.countVotes().send({ from: account });
         }
       } catch (error) {
         alert(error);
@@ -82,7 +82,7 @@ const Workflow = (props) => {
 
   return (
     <div>
-      <div className="row g-3 align-items-center">
+      <div className="row g-3 my-3 align-items-center">
         <div className="col-auto">
           <label htmlFor="inputAddress" className="col-form-label">
             Change Workflow

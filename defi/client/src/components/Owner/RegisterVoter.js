@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { uiActions } from "../../store/ui-slice";
 
 const RegisterVoter = () => {
-  const [address, setAddress] = useState("");
+  const dispatch = useDispatch();
+  const [address, setAddress] = useState(null);
   const contract = useSelector((state) => state.web3.contract);
   const account = useSelector((state) => state.web3.accounts[0]);
 
@@ -23,6 +25,13 @@ const RegisterVoter = () => {
 
   contract.events.VoterRegistered().on("data", async ({ returnValues }) => {
     const address = await returnValues[0];
+    dispatch(
+      uiActions.setNotification({
+        display: true,
+        message: `address ${await address} successfully whitelisted!`,
+        type: "success",
+      })
+    );
   });
 
   return (

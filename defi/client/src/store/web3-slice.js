@@ -6,7 +6,7 @@ const web3Slice = createSlice({
     web3: null,
     accounts: null,
     contract: null,
-    isOwner : null,
+    isOwner: null,
   },
   reducers: {
     replaceWeb3(state, action) {
@@ -20,11 +20,6 @@ const web3Slice = createSlice({
     checkOwnership(state, action) {
       state.isOwner = action.payload.isOwner;
     },
-    // clearWeb3(state, action) {
-    //   state.web3 = null;
-    //   state.accounts = null;
-    //   state.contract = null;
-    // }
   },
 });
 

@@ -1,6 +1,5 @@
-import VotingContract from "../contracts/Voting.json";
-import getWeb3 from "../getWeb3";
 import { contractActions } from "./contract-slice";
+import { uiActions } from "./ui-slice";
 
 export const loadContract = (contract) => {
   return async (dispatch) => {
@@ -33,16 +32,46 @@ export const incrementWorflow = (newWorkflowStatus) => {
 export const addProposal = (newProposalId, contract) => {
   return async (dispatch) => {
     const getProposal = async () => {
-      const proposalDesc = await contract.methods.getProposal(newProposalId).call();
-      return {id: newProposalId, description: proposalDesc};
-    }
-    
+      const proposalDesc = await contract.methods
+        .getProposal(newProposalId)
+        .call();
+      return { id: newProposalId, description: proposalDesc };
+    };
     try {
       const proposal = await getProposal();
-      dispatch(contractActions.addProposal({proposal}));
+      dispatch(contractActions.addProposal({ proposal }));
+      dispatch(
+        uiActions.setNotification({
+          display: true,
+          message: `Proposal #${proposal.id} successfully registered`,
+        })
+      );
     } catch (error) {
-      alert('Fail to get proposal');
+      alert("Fail to get proposal");
       console.log(error);
+    }
+  };
+};
+
+export const getProposals = (proposalCount, contract) => {
+  return async (dispatch) => {
+    const getProposals = async () => {
+      const proposals = [];
+      for (let i = 0; i < proposalCount; i++) {
+        const proposalDesc = await contract.methods.getProposal(i).call();
+        const proposal = { id: i, description: proposalDesc };
+        proposals.push(proposal);
+      }
+
+      return proposals;
     };
+
+    try {
+      const proposals = await getProposals();
+      dispatch(contractActions.getProposals({ proposals }));
+    } catch (error) {
+      alert("Failed to get existing proposals");
+      console.log(error);
+    }
   };
 };
