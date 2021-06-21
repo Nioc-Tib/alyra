@@ -1,7 +1,6 @@
 .App {
   height: 100%;
   text-align: center;
-  background-color: #0f3460;
 }
 
 .App-logo {
@@ -9,14 +8,14 @@
 }
 
 .card-header {
-  background-color: #1a1a2e;
+  background-color: #222831;
 }
 
 .card-body {
-  background-color: #16213e;
+  background-color: #393e46;
 }
 
 .navbar {
-  background-color: #1a1a2e;
+  background-color: #222831;
   color: white;
 }
