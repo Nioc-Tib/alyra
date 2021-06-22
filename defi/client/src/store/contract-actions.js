@@ -21,14 +21,6 @@ export const loadContract = (contract) => {
   };
 };
 
-// export const incrementWorflow = (newWorkflowStatus) => {
-//   return (dispatch) => {
-//     dispatch(
-//       contractActions.updateWorkflow({ workflowStatus: newWorkflowStatus })
-//     );
-//   };
-// };
-
 export const addProposal = (newProposalId, contract) => {
   return async (dispatch) => {
     const getProposal = async () => {
