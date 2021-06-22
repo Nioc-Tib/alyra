@@ -14,12 +14,23 @@ const RegisterVoter = () => {
 
   const whitelist = async (event) => {
     event.preventDefault();
-    try {
-      // Get network provider and web3 instance.
-      await contract.methods.whitelist(address).send({ from: account });
-    } catch (error) {
-      // Catch any errors for any of the above operations.
-      alert(error);
+    const voters = await contract.methods.getVoters().call();
+    if (voters.includes(address)) {
+      dispatch(
+        uiActions.setNotification({
+          display: true,
+          message: `address ${await address} already whitelisted!`,
+          type: "failure",
+        })
+      );
+    } else {
+      try {
+        // Get network provider and web3 instance.
+        await contract.methods.whitelist(address).send({ from: account });
+      } catch (error) {
+        // Catch any errors for any of the above operations.
+        alert(error);
+      }
     }
   };
 

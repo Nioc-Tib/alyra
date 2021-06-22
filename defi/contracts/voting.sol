@@ -10,9 +10,10 @@ contract Voting is Ownable {
     uint256 public winningProposalId;
     uint256 maxVotes;
     uint256 public proposalCounter;
+    address[] votersAddress;
     mapping(address => Voter) voters;
     WorkflowStatus public state;
-    mapping(uint256 => Proposal) public proposals;
+    mapping(uint256 => Proposal) proposals;
     mapping(string => bool) proposalExists;
 
     struct Voter {
@@ -67,6 +68,7 @@ contract Voting is Ownable {
             "This address is already whitelisted"
         );
         voters[_address].isRegistered = true;
+        votersAddress.push(_address);
         emit VoterRegistered(_address);
     }
 
@@ -196,5 +198,17 @@ contract Voting is Ownable {
         returns (string memory)
     {
         return proposals[_proposalId].description;
+    }
+
+    function getVoters() public view returns (address[] memory) {
+        return votersAddress;
+    }
+
+    function checkProposalExists(string memory _proposal)
+        public
+        view
+        returns (bool)
+    {
+        return proposalExists[_proposal];
     }
 }

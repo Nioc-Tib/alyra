@@ -6,7 +6,7 @@ const ListProposals = () => {
   const proposals = useSelector((state) => state.contract.proposals);
 
   return (
-    <Fragment>
+    <div className="mt-5">
       {proposals.map((proposal) => (
         <Proposal
           key={proposal.id}
@@ -14,7 +14,7 @@ const ListProposals = () => {
           description={proposal.description}
         />
       ))}
-    </Fragment>
+    </div>
   );
 };
 

@@ -71,15 +71,11 @@ const App = () => {
 
   return (
     <Fragment>
-      <Header />
+      <Header workflowTitle={workflowTitle} />
       <div className="App container">
         {notification.display && (
           <Notification message={notification.message} />
         )}
-        <div className="my-3">
-          <h4 className="d-inline p-2">Worklow Status :</h4>
-          <h4 className="d-inline p-2">{workflowTitle[workflowStatus]}</h4>
-        </div>
         {workflowStatus === 5 && <GetWinningProposal />}
         {isOwner && <Workflow />}
         {workflowStatus === 0 && isOwner && <RegisterVoter />}

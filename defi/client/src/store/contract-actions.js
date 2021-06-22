@@ -44,6 +44,7 @@ export const addProposal = (newProposalId, contract) => {
         uiActions.setNotification({
           display: true,
           message: `Proposal #${proposal.id} successfully registered`,
+          type: "success",
         })
       );
     } catch (error) {

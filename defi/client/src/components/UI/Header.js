@@ -1,8 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-const Header = () => {
+const Header = (propos) => {
   const account = useSelector((state) => state.web3.accounts[0]);
+  const workflowStatus = useSelector((state) => state.contract.workflowStatus);
+
   const truncateWalletAddress = (address, startLength = 4, endLength = 4) => {
     return `${address.substring(0, startLength)}...${address.substring(
       address.length - endLength
@@ -10,11 +12,11 @@ const Header = () => {
   };
 
   return (
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <div class="container-fluid">
+    <nav className="navbar navbar-expand-lg navbar-light">
+      <div className="container-fluid">
         <h2>Voting Dapp</h2>
         <button
-          class="navbar-toggler"
+          className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
@@ -22,11 +24,16 @@ const Header = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-            <li class="nav-item">Account: {truncateWalletAddress(account)}</li>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <h4 className="navbar-nav ms-auto mb-2 mb-lg-0">
+            Workflow Status: {propos.workflowTitle[workflowStatus]}
+          </h4>
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              Account: {truncateWalletAddress(account)}
+            </li>
           </ul>
         </div>
       </div>

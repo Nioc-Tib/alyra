@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addProposal } from "../../store/contract-actions";
+import { uiActions } from "../../store/ui-slice";
 
 const CreateProposal = () => {
   const dispatch = useDispatch();
@@ -26,11 +27,33 @@ const CreateProposal = () => {
 
   const proposalSubmitHandler = async (event) => {
     event.preventDefault();
-    try {
-      await contract.methods.submitProposal(proposal).send({ from: account });
-    } catch (error) {
-      alert("Transaction failed");
-      console.log(error);
+    const proposalExists = await contract.methods
+      .checkProposalExists(proposal)
+      .call();
+    const voters = await contract.methods.getVoters().call();
+    if (!voters.includes(account)) {
+      dispatch(
+        uiActions.setNotification({
+          display: true,
+          message: `Account ${account} not whitelisted`,
+          type: "failure",
+        })
+      );
+    } else if (proposalExists) {
+      dispatch(
+        uiActions.setNotification({
+          display: true,
+          message: "Proposal already submitted",
+          type: "failure",
+        })
+      );
+    } else {
+      try {
+        await contract.methods.submitProposal(proposal).send({ from: account });
+      } catch (error) {
+        alert("Transaction failed");
+        console.log(error);
+      }
     }
   };
 
