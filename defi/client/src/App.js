@@ -11,6 +11,7 @@ import ListProposals from "./components/Proposals/ListProposals";
 import GetWinningProposal from "./components/Proposals/GetWinningProposal";
 import Notification from "./components/UI/Notification";
 import Header from "./components/UI/Header";
+import { subscribeToEvents } from "./store/contract-actions";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -32,38 +33,34 @@ const App = () => {
     "Votes Tallied",
   ];
 
-  useEffect(() => {
-    dispatch(loadWeb3());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (contract !== null) {
-      const checkIfExistingProposals = async () => {
-        const proposalCounter = await contract.methods.proposalCounter().call();
-        dispatch(getProposals(proposalCounter, contract));
-      };
-      checkIfExistingProposals();
-    }
-  }, [dispatch, contract]);
-
-  useEffect(() => {
-    if (web3 !== null && contract !== null) {
-      dispatch(loadContract(contract));
-    }
-  }, [dispatch, web3, contract]);
-
-  useEffect(() => {
-    if (owner !== null && accounts !== null) {
-      dispatch(checkOwnership(owner, accounts[0]));
-    }
-  }, [dispatch, owner, accounts]);
-
   window.ethereum.on("accountsChanged", async () => {
     if (isOwner !== null) {
       const newAccount = await web3.eth.getAccounts();
       dispatch(updateAccounts(newAccount));
     }
   });
+
+  useEffect(() => {
+    dispatch(loadWeb3());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (contract !== null) {
+      dispatch(loadContract(contract));
+      const checkIfExistingProposals = async () => {
+        const proposalCounter = await contract.methods.proposalCounter().call();
+        dispatch(getProposals(proposalCounter, contract));
+      };
+      checkIfExistingProposals();
+      dispatch(subscribeToEvents(contract));
+    }
+  }, [dispatch, contract]);
+
+  useEffect(() => {
+    if (owner !== null && accounts !== null) {
+      dispatch(checkOwnership(owner, accounts[0]));
+    }
+  }, [dispatch, owner, accounts]);
 
   if (!web3) {
     return <div>Loading Web3, accounts, and contract...</div>;

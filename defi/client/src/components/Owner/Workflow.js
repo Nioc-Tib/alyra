@@ -1,9 +1,7 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { incrementWorflow } from "../../store/contract-actions";
+import { useSelector } from "react-redux";
 
 const Workflow = () => {
-  const dispatch = useDispatch();
   const contract = useSelector((state) => state.web3.contract);
   const workflowStatus = useSelector((state) => state.contract.workflowStatus);
   const account = useSelector((state) => state.web3.accounts[0]);
@@ -59,26 +57,6 @@ const Workflow = () => {
       }
     }
   };
-
-  contract.events.ProposalsRegistrationStarted().on("data", () => {
-    dispatch(incrementWorflow(1));
-  });
-
-  contract.events.ProposalsRegistrationEnded().on("data", () => {
-    dispatch(incrementWorflow(2));
-  });
-
-  contract.events.VotingSessionStarted().on("data", () => {
-    dispatch(incrementWorflow(3));
-  });
-
-  contract.events.VotingSessionEnded().on("data", () => {
-    dispatch(incrementWorflow(4));
-  });
-
-  contract.events.VotesTallied().on("data", () => {
-    dispatch(incrementWorflow(5));
-  });
 
   return (
     <div>

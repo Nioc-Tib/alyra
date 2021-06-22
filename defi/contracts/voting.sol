@@ -211,4 +211,8 @@ contract Voting is Ownable {
     {
         return proposalExists[_proposal];
     }
+
+    function hasVoted(address _address) public view returns (bool) {
+        return voters[_address].hasVoted;
+    }
 }

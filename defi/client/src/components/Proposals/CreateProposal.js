@@ -1,25 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addProposal } from "../../store/contract-actions";
 import { uiActions } from "../../store/ui-slice";
 
 const CreateProposal = () => {
   const dispatch = useDispatch();
-  const [newProposalId, setNewProposalId] = useState(null);
   const [proposal, setProposal] = useState("");
   const contract = useSelector((state) => state.web3.contract);
   const account = useSelector((state) => state.web3.accounts[0]);
-  const proposals = useSelector((state) => state.contract.proposals);
-
-  useEffect(() => {
-    if (contract !== null && newProposalId !== null) {
-      if (proposals === []) {
-        dispatch(addProposal(newProposalId, contract));
-      } else if (proposals[proposals.length] !== newProposalId) {
-        dispatch(addProposal(newProposalId, contract));
-      }
-    }
-  }, [dispatch, newProposalId]);
 
   const proposalChangeHandler = (event) => {
     setProposal(event.target.value);
@@ -56,11 +43,6 @@ const CreateProposal = () => {
       }
     }
   };
-
-  contract.events.ProposalRegistered().on("data", async ({ returnValues }) => {
-    const id = parseInt(await returnValues[0]);
-    setNewProposalId(id);
-  });
 
   return (
     <form onSubmit={proposalSubmitHandler} className="mb-4">

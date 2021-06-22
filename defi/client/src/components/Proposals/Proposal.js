@@ -11,11 +11,20 @@ const Proposal = (props) => {
 
   const voteProposal = async () => {
     const voters = await contract.methods.getVoters().call();
+    const hasVoted = await contract.methods.hasVoted(account).call();
     if (!voters.includes(account)) {
       dispatch(
         uiActions.setNotification({
           display: "true",
           message: `Account ${account} note whitelisted`,
+          type: "failure",
+        })
+      );
+    } else if (hasVoted) {
+      dispatch(
+        uiActions.setNotification({
+          display: "true",
+          message: "You have already voted!",
           type: "failure",
         })
       );
@@ -27,16 +36,6 @@ const Proposal = (props) => {
       }
     }
   };
-
-  contract.events.Voted().on("data", async () => {
-    dispatch(
-      uiActions.setNotification({
-        display: "true",
-        message: "Your vote has been registered!",
-        type: "success",
-      })
-    );
-  });
 
   return (
     <div className="card mb-3">

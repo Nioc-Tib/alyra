@@ -34,17 +34,6 @@ const RegisterVoter = () => {
     }
   };
 
-  contract.events.VoterRegistered().on("data", async ({ returnValues }) => {
-    const address = await returnValues[0];
-    dispatch(
-      uiActions.setNotification({
-        display: true,
-        message: `address ${await address} successfully whitelisted!`,
-        type: "success",
-      })
-    );
-  });
-
   return (
     <form onSubmit={whitelist}>
       <div className="row g-3 align-items-center">

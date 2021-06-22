@@ -21,13 +21,13 @@ export const loadContract = (contract) => {
   };
 };
 
-export const incrementWorflow = (newWorkflowStatus) => {
-  return (dispatch) => {
-    dispatch(
-      contractActions.updateWorkflow({ workflowStatus: newWorkflowStatus })
-    );
-  };
-};
+// export const incrementWorflow = (newWorkflowStatus) => {
+//   return (dispatch) => {
+//     dispatch(
+//       contractActions.updateWorkflow({ workflowStatus: newWorkflowStatus })
+//     );
+//   };
+// };
 
 export const addProposal = (newProposalId, contract) => {
   return async (dispatch) => {
@@ -74,5 +74,63 @@ export const getProposals = (proposalCount, contract) => {
       alert("Failed to get existing proposals");
       console.log(error);
     }
+  };
+};
+
+export const subscribeToEvents = (contract) => {
+  let newProposalId = null;
+  return async (dispatch) => {
+    contract.events
+      .ProposalRegistered()
+      .on("data", async ({ returnValues }) => {
+        const id = parseInt(await returnValues[0]);
+        const description = await contract.methods.getProposal(id).call();
+        const proposal = { id, description };
+        if (newProposalId !== id) {
+          dispatch(contractActions.addProposal({ proposal }));
+        }
+        newProposalId = id;
+      });
+
+    contract.events.ProposalsRegistrationStarted().on("data", () => {
+      dispatch(contractActions.updateWorkflow({ workflowStatus: 1 }));
+    });
+
+    contract.events.ProposalsRegistrationEnded().on("data", () => {
+      dispatch(contractActions.updateWorkflow({ workflowStatus: 2 }));
+    });
+
+    contract.events.VotingSessionStarted().on("data", () => {
+      dispatch(contractActions.updateWorkflow({ workflowStatus: 3 }));
+    });
+
+    contract.events.VotingSessionEnded().on("data", () => {
+      dispatch(contractActions.updateWorkflow({ workflowStatus: 4 }));
+    });
+
+    contract.events.VotesTallied().on("data", () => {
+      dispatch(contractActions.updateWorkflow({ workflowStatus: 5 }));
+    });
+
+    contract.events.VoterRegistered().on("data", async ({ returnValues }) => {
+      const address = await returnValues[0];
+      dispatch(
+        uiActions.setNotification({
+          display: true,
+          message: `address ${await address} successfully whitelisted!`,
+          type: "success",
+        })
+      );
+    });
+
+    contract.events.Voted().on("data", async () => {
+      dispatch(
+        uiActions.setNotification({
+          display: "true",
+          message: "Your vote has been registered!",
+          type: "success",
+        })
+      );
+    });
   };
 };
