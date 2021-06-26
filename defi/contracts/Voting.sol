@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.5;
+pragma solidity >0.8.5;
 
 /// @title A basic voting system
 /// @author Ryan Loutfi
 
-import "./Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Voting is Ownable {
     uint256 public winningProposalId;
