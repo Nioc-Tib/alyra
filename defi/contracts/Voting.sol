@@ -200,6 +200,14 @@ contract Voting is Ownable {
         return proposals[_proposalId].description;
     }
 
+    function getProposalVotes(uint256 _proposalId)
+        public
+        view
+        returns (uint256)
+    {
+        return proposals[_proposalId].voteCount;
+    }
+
     function getVoters() public view returns (address[] memory) {
         return votersAddress;
     }

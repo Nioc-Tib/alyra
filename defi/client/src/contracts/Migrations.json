@@ -1851,12 +1851,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x77053b74a849554B131c05dC1e26F25C2376E207",
-      "transactionHash": "0x19f8c18568b5dc4279ab7494ac8fbfbafcc5baaa16e1669ca707ca9c148fc34c"
+      "address": "0xb2a354C43EcCB1f2747415f7C371820265951ed9",
+      "transactionHash": "0xefa4fe5d0447fd061af022866fe10d3ea3276d852a66bc16f2cd28c9f33e646b"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2021-06-23T08:01:39.327Z",
+  "updatedAt": "2021-06-27T09:50:41.211Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
